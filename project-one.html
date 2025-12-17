@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>String & Array Operations</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>String, Array & Function Operations</h1>
+
+    <section>
+        <h2>String Operations</h2>
+        <input type="text" id="inputString" placeholder="Enter a string">
+        <button onclick="reverseString()">Reverse String</button>
+        <button onclick="extractChars()">Extract 3rd & 4th Characters</button>
+        <button onclick="findLongestWord()">Find Longest Word</button>
+        <button onclick="convertToLower()">Lowercase</button>
+        <button onclick="convertToUpper()">Uppercase</button>
+        <button onclick="detectWordsSpecials()">Word & Special Count</button>
+        <p id="stringResult"></p>
+    </section>
+
+    <section>
+        <h2>Array Operations</h2>
+        <input type="text" id="arrayInput" placeholder="Enter numbers separated by commas">
+        <button onclick="createArray()">Create Array</button>
+        <button onclick="displayThird()">Display 3rd Element</button>
+        <button onclick="displayLast()">Display Last Element</button>
+        <button onclick="findTenthChar()">Find 10th Character</button>
+        <button onclick="doubleArray()">Double Elements</button>
+        <button onclick="deleteElements()">Delete Elements (splice first 2)</button>
+        <p id="arrayResult"></p>
+    </section>
+
+    <section>
+        <h2>Functions: Arithmetic & Checks</h2>
+        <input type="number" id="num1" placeholder="Number 1">
+        <input type="number" id="num2" placeholder="Number 2">
+        <button onclick="addNumbers()">Add</button>
+        <button onclick="multiplyNumbers()">Multiply</button>
+        <button onclick="divideNumbers()">Divide</button>
+        <input type="number" id="checkEvenOdd" placeholder="Check Even/Odd">
+        <button onclick="checkEvenOdd()">Check Even/Odd</button>
+        <p id="funcResult"></p>
+    </section>
+
+    <section>
+        <h2>Form Data</h2>
+        <form id="personForm">
+            <input type="text" name="firstName" placeholder="First Name">
+            <input type="text" name="lastName" placeholder="Last Name">
+            <input type="number" name="age" placeholder="Age">
+            <button type="button" onclick="displayFormData()">Display Form Data</button>
+            <button type="button" onclick="formDataCount()">Form Data Count</button>
+        </form>
+        <p id="formResult"></p>
+    </section>
+
+    <section>
+        <h2>Person Object</h2>
+        <button onclick="createPerson()">Create Person Object</button>
+        <p id="personResult"></p>
+    </section>
+
+<script src="script.js"></script>
+</body>
+</html>
