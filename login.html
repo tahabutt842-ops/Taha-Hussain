@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Smart Library - Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at top left, #4f46e5, transparent 55%),
+        radial-gradient(circle at bottom right, #ec4899, transparent 50%),
+        linear-gradient(135deg, #0f172a, #020617);
+      font-family: system-ui;
+      color: #e5e7eb;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 18px;
+      padding: 28px;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    p {
+      text-align: center;
+      font-size: 14px;
+      color: #9ca3af;
+      margin-bottom: 18px;
+    }
+
+    label {
+      font-size: 13px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.85);
+      color: #e5e7eb;
+      margin-bottom: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #eef2ff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .switch {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #a5b4fc;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>📚 Smart Library</h1>
+    <p id="titleText">Login to continue</p>
+
+    <form id="authForm">
+      <label>Role</label>
+      <select id="role">
+        <option value="Student">Student</option>
+        <option value="Librarian">Librarian</option>
+      </select>
+
+      <label>Email</label>
+      <input type="email" id="email" required />
+
+      <label>Password</label>
+      <input type="password" id="password" required />
+
+      <button type="submit" id="submitBtn">Login</button>
+    </form>
+
+    <div class="switch" id="toggle">
+      Don’t have an account? <strong>Sign Up</strong>
+    </div>
+  </div>
+
+  <script>
+    let isSignup = false;
+
+    const form = document.getElementById("authForm");
+    const toggle = document.getElementById("toggle");
+    const submitBtn = document.getElementById("submitBtn");
+    const titleText = document.getElementById("titleText");
+
+    toggle.onclick = () => {
+      isSignup = !isSignup;
+      submitBtn.textContent = isSignup ? "Sign Up" : "Login";
+      titleText.textContent = isSignup
+        ? "Create a new account"
+        : "Login to continue";
+      toggle.innerHTML = isSignup
+        ? "Already have an account? <strong>Login</strong>"
+        : "Don’t have an account? <strong>Sign Up</strong>";
+    };
+
+    form.onsubmit = (e) => {
+      e.preventDefault();
+
+      const role = role.value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+
+      if (isSignup) {
+        if (users.find(u => u.email === email)) {
+          alert("User already exists");
+          return;
+        }
+
+        users.push({ role, email, password });
+        localStorage.setItem("users", JSON.stringify(users));
+        alert("Signup successful. You can now login.");
+        toggle.click();
+        return;
+      }
+
+      const user = users.find(
+        u => u.email === email && u.password === password && u.role === role
+      );
+
+      if (!user) {
+        alert("Invalid login credentials");
+        return;
+      }
+
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
+      window.location.href = "library.html";
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Smart Library</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    /* =========== GLOBAL RESET =========== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 24px 16px;
+      color: #020617;
+      background: radial-gradient(circle at top left, #4f46e5, transparent 55%),
+        radial-gradient(circle at bottom right, #ec4899, transparent 50%),
+        linear-gradient(135deg, #0f172a, #020617);
+      display: flex;
+      justify-content: center;
+    }
+
+    /* =========== LAYOUT =========== */
+    .container {
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.86);
+      border-radius: 18px;
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      animation: fadeInUp 0.35s ease-out;
+    }
+
+    h1,
+    h2 {
+      color: #e5e7eb;
+      margin-bottom: 6px;
+    }
+
+    p,
+    label,
+    th,
+    td,
+    span,
+    input,
+    select {
+      color: #e5e7eb;
+    }
+
+    .flex {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* =========== TAGS & BADGES =========== */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    .tag-available {
+      background: rgba(22, 163, 74, 0.12);
+      border-color: rgba(34, 197, 94, 0.6);
+      color: #bbf7d0;
+    }
+
+    .tag-occupied {
+      background: rgba(248, 113, 113, 0.14);
+      border-color: rgba(248, 113, 113, 0.8);
+      color: #fecaca;
+    }
+
+    .tag-overdue {
+      background: rgba(249, 115, 22, 0.2);
+      border-color: rgba(251, 146, 60, 0.9);
+      color: #fed7aa;
+    }
+
+    .badge {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    .badge strong {
+      color: #e5e7eb;
+    }
+
+    /* =========== FORM =========== */
+    form label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+      font-weight: 500;
+      color: #cbd5f5;
+    }
+
+    form input,
+    form select {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 14px;
+      outline: none;
+      background: rgba(15, 23, 42, 0.85);
+      color: #e5e7eb;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease,
+        background 0.15s ease, transform 0.05s ease;
+    }
+
+    form input::placeholder {
+      color: #6b7280;
+    }
+
+    form input:focus,
+    form select:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.8),
+        0 0 20px rgba(79, 70, 229, 0.55);
+      background: rgba(15, 23, 42, 0.95);
+      transform: translateY(-1px);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px 18px;
+    }
+
+    /* =========== BUTTONS =========== */
+    .btn {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: transform 0.08s ease, box-shadow 0.15s ease,
+        background 0.15s ease, opacity 0.12s ease;
+      outline: none;
+    }
+
+    .btn:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: none;
+      opacity: 0.9;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #eef2ff;
+      box-shadow: 0 18px 32px rgba(79, 70, 229, 0.5);
+      border: 1px solid rgba(191, 219, 254, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4338ca, #4f46e5);
+      transform: translateY(-1px);
+      box-shadow: 0 24px 48px rgba(79, 70, 229, 0.7);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      color: #e5e7eb;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.45);
+    }
+
+    .btn-outline:hover {
+      background: rgba(15, 23, 42, 0.7);
+      border-color: #6366f1;
+    }
+
+    .btn-small {
+      padding: 6px 11px;
+      font-size: 12px;
+    }
+
+    .btn-danger {
+      background: radial-gradient(circle at top left, #ef4444, #b91c1c);
+      color: #fee2e2;
+      border: 1px solid rgba(248, 113, 113, 0.7);
+      box-shadow: 0 14px 28px rgba(239, 68, 68, 0.5);
+    }
+
+    .btn-danger:hover {
+      background: radial-gradient(circle at top left, #dc2626, #991b1b);
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, #f97316, #facc15);
+      color: #111827;
+      border: 1px solid rgba(252, 211, 77, 0.85);
+      box-shadow: 0 14px 28px rgba(249, 115, 22, 0.5);
+    }
+
+    .btn-warning:hover {
+      background: linear-gradient(135deg, #ea580c, #f59e0b);
+    }
+
+    /* =========== TABLE =========== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    thead {
+      background: linear-gradient(
+        90deg,
+        rgba(30, 64, 175, 0.85),
+        rgba(79, 70, 229, 0.8)
+      );
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #e0e7ff;
+    }
+
+    tbody tr {
+      background: radial-gradient(
+          circle at top left,
+          rgba(79, 70, 229, 0.07),
+          transparent 55%
+        ),
+        rgba(15, 23, 42, 0.92);
+      transition: transform 0.08s ease, box-shadow 0.12s ease,
+        background 0.12s ease;
+    }
+
+    tbody tr:nth-child(even) {
+      background: radial-gradient(
+          circle at bottom right,
+          rgba(236, 72, 153, 0.06),
+          transparent 60%
+        ),
+        rgba(15, 23, 42, 0.9);
+    }
+
+    tbody tr:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.9);
+      background: radial-gradient(
+          circle at top left,
+          rgba(129, 140, 248, 0.1),
+          transparent 20%
+        ),
+        rgba(15, 23, 42, 0.96);
+    }
+
+    .status-cell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .overdue-row td {
+      background: radial-gradient(
+          circle at top right,
+          rgba(248, 113, 22, 0.25),
+          transparent 30%
+        ),
+        rgba(24, 24, 27, 0.95) !important;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 24px 0;
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    .empty-state strong {
+      color: #e5e7eb;
+    }
+
+    /* =========== FILTER BAR =========== */
+    .filter-bar select,
+    .filter-bar input {
+      max-width: 220px;
+    }
+
+    .search-input {
+      position: relative;
+    }
+
+    .search-input input {
+      padding-left: 30px;
+    }
+
+    .search-input span {
+      position: absolute;
+      left: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: #9ca3af;
+      pointer-events: none;
+    }
+
+    /* =========== RESPONSIVE =========== */
+    @media (max-width: 768px) {
+      body {
+        padding: 16px 10px;
+      }
+
+      th:nth-child(6),
+      td:nth-child(6),
+      th:nth-child(7),
+      td:nth-child(7) {
+        display: none;
+      }
+
+      .card {
+        padding: 16px 14px;
+      }
+    }
+
+    /* =========== ANIMATIONS =========== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="card">
+      <div class="flex-between">
+        <div>
+          <h1>📚 Smart Library</h1>
+          <p class="badge">
+            Add books, track borrowed status, and send reminder emails to
+            students — all in one collaborative view.
+          </p>
+        </div>
+        <div class="flex">
+          <span class="tag tag-available">Available</span>
+          <span class="tag tag-occupied">Occupied</span>
+          <span class="tag tag-overdue">Overdue</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Book Form -->
+    <div class="card">
+      <div class="flex-between" style="margin-bottom: 12px">
+        <h2>Register / Add Book</h2>
+        <span class="badge">
+          Used by <strong>students</strong> and <strong>librarians</strong>.
+        </span>
+      </div>
+      <form id="bookForm">
+        <div class="form-grid">
+          <div>
+            <label for="title">Book Title *</label>
+            <input
+              type="text"
+              id="title"
+              required
+              placeholder="e.g. Data Structures in C"
+            />
+          </div>
+          <div>
+            <label for="author">Author *</label>
+            <input
+              type="text"
+              id="author"
+              required
+              placeholder="e.g. E. Balagurusamy"
+            />
+          </div>
+          <div>
+            <label for="role">Who is adding?</label>
+            <select id="role">
+              <option value="Librarian">Librarian</option>
+              <option value="Student">Student</option>
+            </select>
+          </div>
+          <div>
+            <label for="borrowerName">Borrower Name (optional)</label>
+            <input
+              type="text"
+              id="borrowerName"
+              placeholder="If already borrowed"
+            />
+          </div>
+          <div>
+            <label for="borrowerEmail">Borrower Email (optional)</label>
+            <input
+              type="email"
+              id="borrowerEmail"
+              placeholder="student@example.com"
+            />
+          </div>
+          <div>
+            <label for="dueDate">Due Date (optional)</label>
+            <input type="date" id="dueDate" />
+          </div>
+        </div>
+        <div style="margin-top: 18px" class="flex-between">
+          <button type="submit" class="btn btn-primary">
+            ➕ Add Book to Library
+          </button>
+          <span class="badge">
+            * Required fields. If no borrower is set, status is
+            <strong>Available</strong>.
+          </span>
+        </div>
+      </form>
+    </div>
+
+    <!-- Filters -->
+    <div class="card">
+      <div class="flex-between filter-bar">
+        <div class="flex">
+          <div>
+            <label
+              for="statusFilter"
+              style="font-size: 13px; margin-bottom: 4px"
+              >Status</label
+            >
+            <select id="statusFilter">
+              <option value="all">All</option>
+              <option value="available">Available</option>
+              <option value="occupied">Occupied</option>
+              <option value="overdue">Overdue</option>
+            </select>
+          </div>
+          <div class="search-input">
+            <label
+              for="searchInput"
+              style="font-size: 13px; margin-bottom: 4px; display: block"
+              >Search</label
+            >
+            <span>🔍</span>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Title, author, borrower..."
+            />
+          </div>
+        </div>
+        <div>
+          <button id="clearAllBtn" class="btn btn-outline btn-small">
+            🗑 Clear All (Local)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Book List -->
+    <div class="card">
+      <div class="flex-between">
+        <h2>Book Inventory</h2>
+        <span class="badge" id="summaryBadge"></span>
+      </div>
+      <div id="bookTableContainer"></div>
+    </div>
+  </div>
+
+  <script>
+    // ========= DATA & STORAGE =========
+    const STORAGE_KEY = "smartLibraryBooks";
+    let books = [];
+
+    function loadBooks() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      try {
+        return JSON.parse(raw);
+      } catch (e) {
+        console.error("Failed to parse storage", e);
+        return [];
+      }
+    }
+
+    function saveBooks() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(books));
+    }
+
+    function generateId() {
+      return "b_" + Date.now() + "_" + Math.random().toString(16).slice(2);
+    }
+
+    // ========= DEFAULT BOOK LIST (FIRST TIME ONLY) =========
+    const defaultBooks = [
+      {
+        id: generateId(),
+        title: "Introduction to Algorithms",
+        author: "Thomas H. Cormen",
+        addedByRole: "Librarian",
+        status: "available",
+        borrowerName: "",
+        borrowerEmail: "",
+        dueDate: ""
+      },
+      {
+        id: generateId(),
+        title: "Database System Concepts",
+        author: "Abraham Silberschatz",
+        addedByRole: "Librarian",
+        status: "occupied",
+        borrowerName: "Anita Sharma",
+        borrowerEmail: "anita.sharma@example.com",
+        dueDate: "2025-01-15"
+      },
+      {
+        id: generateId(),
+        title: "Operating System Concepts",
+        author: "Abraham Silberschatz",
+        addedByRole: "Librarian",
+        status: "available",
+        borrowerName: "",
+        borrowerEmail: "",
+        dueDate: ""
+      },
+      {
+        id: generateId(),
+        title: "Let Us C",
+        author: "Yashavant Kanetkar",
+        addedByRole: "Student",
+        status: "occupied",
+        borrowerName: "Rahul Verma",
+        borrowerEmail: "rahul.verma@example.com",
+        dueDate: "2024-12-30"
+      },
+      {
+        id: generateId(),
+        title: "Computer Networks",
+        author: "Andrew S. Tanenbaum",
+        addedByRole: "Librarian",
+        status: "available",
+        borrowerName: "",
+        borrowerEmail: "",
+        dueDate: ""
+      }
+    ];
+
+    // ========= UTILITIES =========
+    function isOverdue(book) {
+      if (!book.dueDate || book.status !== "occupied") return false;
+      const today = new Date();
+      const due = new Date(book.dueDate);
+      today.setHours(0, 0, 0, 0);
+      due.setHours(0, 0, 0, 0);
+      return due < today;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "-";
+      const d = new Date(dateStr + "T00:00:00");
+      if (isNaN(d.getTime())) return dateStr;
+      return d.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    }
+
+    // ========= RENDERING =========
+    function renderBooks() {
+      const container = document.getElementById("bookTableContainer");
+      const statusFilter = document.getElementById("statusFilter").value;
+      const searchQuery = document
+        .getElementById("searchInput")
+        .value.toLowerCase()
+        .trim();
+
+      if (!books.length) {
+        container.innerHTML =
+          '<div class="empty-state">No books yet. <strong>Add a book</strong> using the form above.</div>';
+        document.getElementById(
+          "summaryBadge"
+        ).textContent = `0 books in library.`;
+        return;
+      }
+
+      let filtered = books.slice();
+
+      if (statusFilter === "available") {
+        filtered = filtered.filter((b) => b.status === "available");
+      } else if (statusFilter === "occupied") {
+        filtered = filtered.filter((b) => b.status === "occupied");
+      } else if (statusFilter === "overdue") {
+        filtered = filtered.filter((b) => isOverdue(b));
+      }
+
+      if (searchQuery) {
+        filtered = filtered.filter((b) => {
+          return (
+            b.title.toLowerCase().includes(searchQuery) ||
+            b.author.toLowerCase().includes(searchQuery) ||
+            (b.borrowerName || "").toLowerCase().includes(searchQuery) ||
+            (b.borrowerEmail || "").toLowerCase().includes(searchQuery)
+          );
+        });
+      }
+
+      if (!filtered.length) {
+        container.innerHTML =
+          '<div class="empty-state">No books match the filters / search.</div>';
+      } else {
+        let html = `
+          <div style="overflow-x: auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Author</th>
+                  <th>Status</th>
+                  <th>Borrower</th>
+                  <th>Due Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+        `;
+
+        filtered.forEach((book, index) => {
+          const overdue = isOverdue(book);
+          html += `
+            <tr class="${overdue ? "overdue-row" : ""}">
+              <td>${index + 1}</td>
+              <td>
+                <strong>${book.title}</strong><br />
+                <span class="badge">Added by: ${book.addedByRole}</span>
+              </td>
+              <td>${book.author}</td>
+              <td>
+                <div class="status-cell">
+                  <span class="tag ${
+                    book.status === "available"
+                      ? "tag-available"
+                      : "tag-occupied"
+                  }">
+                    ${book.status === "available" ? "Available" : "Occupied"}
+                  </span>
+                  ${
+                    overdue
+                      ? '<span class="tag tag-overdue">Overdue</span>'
+                      : ""
+                  }
+                </div>
+              </td>
+              <td>
+                ${
+                  book.borrowerName
+                    ? `<strong>${book.borrowerName}</strong><br />`
+                    : "-"
+                }
+                ${
+                  book.borrowerEmail
+                    ? `<span class="badge">${book.borrowerEmail}</span>`
+                    : ""
+                }
+              </td>
+              <td>${formatDate(book.dueDate)}</td>
+              <td>
+                <div class="flex" style="gap: 6px">
+                  ${
+                    book.status === "available"
+                      ? `<button class="btn btn-small btn-outline" data-action="borrow" data-id="${book.id}">
+                          Mark as Occupied
+                        </button>`
+                      : `<button class="btn btn-small btn-outline" data-action="return" data-id="${book.id}">
+                          Mark as Returned
+                        </button>`
+                  }
+                  <button class="btn btn-small btn-warning" data-action="remind" data-id="${
+                    book.id
+                  }">
+                    Reminder
+                  </button>
+                  <button class="btn btn-small btn-danger" data-action="delete" data-id="${
+                    book.id
+                  }">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `
+              </tbody>
+            </table>
+          </div>
+        `;
+
+        container.innerHTML = html;
+      }
+
+      const total = books.length;
+      const occupied = books.filter((b) => b.status === "occupied").length;
+      const available = total - occupied;
+      const overdueCount = books.filter((b) => isOverdue(b)).length;
+      document.getElementById(
+        "summaryBadge"
+      ).textContent = `${total} total • ${available} available • ${occupied} occupied • ${overdueCount} overdue`;
+    }
+
+    // ========= EVENT HANDLERS =========
+    document
+      .getElementById("bookForm")
+      .addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const title = document.getElementById("title").value.trim();
+        const author = document.getElementById("author").value.trim();
+        const addedByRole = document.getElementById("role").value;
+        const borrowerName = document
+          .getElementById("borrowerName")
+          .value.trim();
+        const borrowerEmail = document
+          .getElementById("borrowerEmail")
+          .value.trim();
+        const dueDate = document.getElementById("dueDate").value;
+
+        if (!title || !author) {
+          alert("Please fill in book title and author.");
+          return;
+        }
+
+        const status =
+          borrowerName || borrowerEmail || dueDate ? "occupied" : "available";
+
+        const newBook = {
+          id: generateId(),
+          title,
+          author,
+          addedByRole,
+          status,
+          borrowerName: borrowerName || "",
+          borrowerEmail: borrowerEmail || "",
+          dueDate: dueDate || "",
+        };
+
+        books.push(newBook);
+        saveBooks();
+        renderBooks();
+
+        document.getElementById("title").value = "";
+        document.getElementById("author").value = "";
+        document.getElementById("borrowerName").value = "";
+        document.getElementById("borrowerEmail").value = "";
+        document.getElementById("dueDate").value = "";
+
+        alert("Book added to library.");
+      });
+
+    document
+      .getElementById("bookTableContainer")
+      .addEventListener("click", function (e) {
+        const btn = e.target.closest("button[data-action]");
+        if (!btn) return;
+        const id = btn.getAttribute("data-id");
+        const action = btn.getAttribute("data-action");
+        const book = books.find((b) => b.id === id);
+        if (!book) return;
+
+        if (action === "borrow") {
+          const borrowerName =
+            prompt("Enter borrower name:", book.borrowerName || "") || "";
+          const borrowerEmail =
+            prompt(
+              "Enter borrower email (optional):",
+              book.borrowerEmail || ""
+            ) || "";
+          const dueDate =
+            prompt(
+              "Enter due date (YYYY-MM-DD) (optional):",
+              book.dueDate || ""
+            ) || "";
+
+          book.status = "occupied";
+          book.borrowerName = borrowerName.trim();
+          book.borrowerEmail = borrowerEmail.trim();
+          book.dueDate = dueDate.trim();
+
+          saveBooks();
+          renderBooks();
+        } else if (action === "return") {
+          if (
+            confirm(
+              "Mark this book as returned and available? Borrower info will be cleared."
+            )
+          ) {
+            book.status = "available";
+            book.borrowerName = "";
+            book.borrowerEmail = "";
+            book.dueDate = "";
+            saveBooks();
+            renderBooks();
+          }
+        } else if (action === "delete") {
+          if (confirm("Delete this book from the library?")) {
+            books = books.filter((b) => b.id !== id);
+            saveBooks();
+            renderBooks();
+          }
+        } else if (action === "remind") {
+          if (!book.borrowerEmail) {
+            alert(
+              "No borrower email saved for this book. Edit the book to add an email."
+            );
+            return;
+          }
+          const subject = encodeURIComponent(
+            `Reminder to return "${book.title}"`
+          );
+          const bodyText = `
+Dear ${book.borrowerName || "Student"},
+
+This is a friendly reminder from the library to return the book:
+Title: ${book.title}
+Author: ${book.author}
+Due Date: ${
+            book.dueDate ? formatDate(book.dueDate) : "not specified"
+          }.
+
+Please return the book as soon as possible.
+
+Thank you,
+Smart Library
+          `.trim();
+
+          const body = encodeURIComponent(bodyText);
+          const mailtoLink = `mailto:${book.borrowerEmail}?subject=${subject}&body=${body}`;
+          window.location.href = mailtoLink;
+        }
+      });
+
+    document
+      .getElementById("statusFilter")
+      .addEventListener("change", renderBooks);
+    document
+      .getElementById("searchInput")
+      .addEventListener("input", renderBooks);
+
+    document
+      .getElementById("clearAllBtn")
+      .addEventListener("click", function () {
+        if (
+          confirm(
+            "This will remove all books stored locally in this browser. Continue?"
+          )
+        ) {
+          books = [];
+          saveBooks();
+          renderBooks();
+        }
+      });
+
+    // ========= INIT =========
+    books = loadBooks();
+    if (!books.length) {
+      books = defaultBooks.slice(); // first time: preload list
+      saveBooks();
+    }
+    renderBooks();
+  </script>
+</body>
+</html>
